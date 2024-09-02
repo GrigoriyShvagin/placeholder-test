@@ -6,8 +6,12 @@
       >
         All posts
       </div>
+      <div class="" v-if="placeholderStore.loadingData">
+        <img src="/images/throbber.gif" alt="" />
+      </div>
       <div
         class="w-full min-h-10 border-black items-center flex border-[1px] text-2xl justify-between px-4"
+        v-else
       >
         <div
           class="w-[10%] flex items-center cursor-pointer"
@@ -50,28 +54,22 @@
 
           <button
             class="w-10 h-10 flex justify-center items-center rounded-full mr-1 hover:bg-slate-300"
-            v-if="
-              Math.ceil(postsLen / 10) - 1 != getCurrentPage &&
-              getCurrentPage < Math.ceil(postsLen / 10)
-            "
+            v-if="maxPages - 1 != getCurrentPage && getCurrentPage < maxPages"
             @click="changePage(getCurrentPage + 1)"
           >
             {{ getCurrentPage + 1 }}
           </button>
           <button
             class="w-10 h-10 flex justify-center items-center rounded-full mr-1"
-            v-if="
-              Math.ceil(postsLen / 10) > 2 &&
-              getCurrentPage < Math.ceil(postsLen / 10) - 2
-            "
+            v-if="maxPages > 2 && getCurrentPage < maxPages - 2"
           >
             ...
           </button>
 
           <button
             class="w-10 h-10 flex justify-center items-center rounded-full mr-1 hover:bg-slate-300"
-            v-if="Math.ceil(postsLen / 10) != getCurrentPage"
-            @click="changePage(Math.ceil(postsLen / 10))"
+            v-if="maxPages != getCurrentPage"
+            @click="changePage(maxPages)"
           >
             {{ Math.ceil(postsLen / 10) }}
           </button>
@@ -99,15 +97,17 @@ import { usePlaceholderStore } from "#imports";
 
 const placeholderStore = usePlaceholderStore();
 
-const loading = computed(() => placeholderStore.loadingData);
-const filterById = useRoute().query.filter;
-const page = useRoute().query.page;
+const route = useRoute();
+const { filter: filterById, page } = route.query;
 const router = useRouter();
 
 let orderingById = filterById == "byId" ? ref(true) : ref(false);
 let getCurrentPage = page ? ref(Number(page)) : ref(1);
 
 const postsLen = computed(() => placeholderStore.postList?.length);
+const maxPages = computed(() =>
+  Math.ceil(placeholderStore.postList?.length / 10)
+);
 
 const postsList = computed(() => {
   if (orderingById.value == false) {

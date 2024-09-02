@@ -7,34 +7,33 @@ const headers = {
 
 interface State {
   loadingData: boolean;
-  postsListState: Post[] | null;
-  reversedPostsListSate: Post[] | null;
+  postsListState: Post[] | [];
 }
 
 export const usePlaceholderStore = defineStore("placeholder", {
-  state: (): State => {
-    return {
-      postsListState: null,
-      loadingData: false,
-      reversedPostsListSate: null,
-    };
-  },
+  state: (): State => ({
+    postsListState: [],
+    loadingData: false,
+  }),
   getters: {
     postList: (state) => state.postsListState,
-    reversedPostList: (state) => state.reversedPostsListSate,
+    reversedPostList: (state) =>
+      state.postsListState.toSorted((a, b) => b.id - a.id),
   },
   actions: {
     async getAllPosts(): Promise<Post[]> {
-      this.loadingData = true;
-      const result = await axios.get(
-        `https://jsonplaceholder.typicode.com/posts`
-      );
-      this.postsListState = result.data;
-      this.reversedPostsListSate = Array.from(result.data);
-      this.reversedPostsListSate?.sort((a, b) => b.id - a.id);
+      try {
+        this.loadingData = true;
+        const result = await axios.get(
+          `https://jsonplaceholder.typicode.com/posts`
+        );
+        this.postsListState = result.data;
 
-      this.loadingData = false;
-      return result.data;
+        this.loadingData = false;
+        return result.data;
+      } catch (error) {
+        throw error;
+      }
     },
   },
 });
