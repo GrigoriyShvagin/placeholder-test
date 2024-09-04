@@ -1,75 +1,32 @@
-# Nuxt 3 Minimal Starter
+Тестовое приложение Nuxt + pinia + tailwind + TS,
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+тз - находится в Task.txt
+
+Основные проблемы, которые заставили подумать :
+
+**_ Недостаточное количество информации в API, есть пагинация, но не сетится количество постов, что не позволяет сделать адекватно. <br/>
+_** Нет фильтрации в API, поэтому было принято решение тащить абсолютно все посты, на стороне сервера их фильтровать, делать пагинацию и тд.<br/>
+
+![image](https://github.com/user-attachments/assets/78aecd16-bfaa-4a68-9a79-f67948368a97)
+
+# Nuxt 3 Minimal Starter
 
 ## Setup
 
 Make sure to install the dependencies:
 
-```bash
 # npm
+
 npm install
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
 # npm
+
 npm run dev
 
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
 # npm
+
 npm run build
 
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
 # npm
+
 npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
