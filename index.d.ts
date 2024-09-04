@@ -4,3 +4,9 @@ interface Post {
   title: string;
   body: string;
 }
+
+interface createPost {
+  title: string;
+  body: string;
+  userId: number;
+}

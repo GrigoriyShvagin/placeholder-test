@@ -13,16 +13,23 @@
         class="w-full min-h-10 border-black items-center flex border-[1px] text-2xl justify-between px-4"
         v-else
       >
-        <div
-          class="w-[10%] flex items-center cursor-pointer"
-          @click="orderById"
-        >
-          id
-          <Icon
-            name="oi:caret-bottom"
-            class="ml-2 w-4 transition"
-            :class="{ activeIcon: orderingById }"
-          />
+        <div class="w-[40%] flex items-center cursor-pointer">
+          <p class="flex w-max items-center" @click="orderById">
+            id
+            <Icon
+              name="oi:caret-bottom"
+              class="ml-2 mr-10 w-4 transition"
+              :class="{ activeIcon: orderingById }"
+            />
+          </p>
+          <button
+            type="button"
+            class="bg-slate-600 text-white px-5 py-[2px] flex items-center justify-center rounded-xl"
+            @click="addModalMenu = true"
+          >
+            Create new
+            <Icon name="simple-line-icons:plus" class="w-5 h-5 ml-4" />
+          </button>
         </div>
         <div class="flex" v-if="postsLen && postsLen > 10">
           <button
@@ -33,7 +40,7 @@
             1</button
           ><button
             class="w-10 h-10 flex justify-center items-center rounded-full mr-1"
-            v-if="getCurrentPage > 2"
+            v-if="getCurrentPage > 3"
           >
             ...
           </button>
@@ -76,7 +83,7 @@
         </div>
       </div>
       <div
-        class="w-full flex flex-1 px-4 min-h-[100px] items-center border-[1px] first-of-type:bg-black border-t-0 border-black"
+        class="w-full flex flex-1 px-4 min-h-[100px] max-h-[100px] items-center border-[1px] first-of-type:bg-black border-t-0 border-black"
         v-for="item in postsList"
         :key="item.id"
       >
@@ -89,6 +96,7 @@
         </div>
       </div>
     </div>
+    <AddModalMenu v-if="addModalMenu" @closed="closeAddModal" />
   </div>
 </template>
 
@@ -103,6 +111,7 @@ const router = useRouter();
 
 let orderingById = filterById == "byId" ? ref(true) : ref(false);
 let getCurrentPage = page ? ref(Number(page)) : ref(1);
+let addModalMenu = ref(false);
 
 const postsLen = computed(() => placeholderStore.postList?.length);
 const maxPages = computed(() =>
@@ -110,6 +119,7 @@ const maxPages = computed(() =>
 );
 
 const postsList = computed(() => {
+  console.log();
   if (orderingById.value == false) {
     return placeholderStore.postList?.slice(
       getCurrentPage.value * 10 - 10,
@@ -123,23 +133,31 @@ const postsList = computed(() => {
   }
 });
 
+function closeAddModal() {
+  addModalMenu.value = false;
+}
+
 function changePage(page: number) {
+  const query = {
+    page: getCurrentPage.value ? getCurrentPage.value : 1,
+    filter: orderingById.value ? "byId" : null,
+  };
   if (getCurrentPage.value) {
     getCurrentPage.value = page;
-    router.push({ query: { page: getCurrentPage.value } });
+    router.push({ query });
   } else {
-    router.push({ query: { page: 1 } });
+    router.push({ query });
   }
 }
 
 function orderById() {
   getCurrentPage.value = 1;
-  if (orderingById.value) {
-    router.push({ query: { filter: null } });
-  } else {
-    router.push({ query: { filter: orderingById ? "byId" : null } });
-  }
   orderingById.value = !orderingById.value;
+  const query = {
+    page: getCurrentPage.value ? getCurrentPage.value : 1,
+    filter: orderingById.value ? "byId" : null,
+  };
+  router.push({ query });
 }
 
 onMounted(() => {

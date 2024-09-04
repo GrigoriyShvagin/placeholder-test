@@ -7,7 +7,7 @@ const headers = {
 
 interface State {
   loadingData: boolean;
-  postsListState: Post[] | [];
+  postsListState: Post[];
 }
 
 export const usePlaceholderStore = defineStore("placeholder", {
@@ -29,6 +29,21 @@ export const usePlaceholderStore = defineStore("placeholder", {
         );
         this.postsListState = result.data;
 
+        this.loadingData = false;
+        return result.data;
+      } catch (error) {
+        throw error;
+      }
+    },
+    async createPost(postInfo: createPost): Promise<Post> {
+      try {
+        const params = postInfo;
+        this.loadingData = true;
+        const result = await axios.post(
+          `https://jsonplaceholder.typicode.com/posts`,
+          params,
+          { headers }
+        );
         this.loadingData = false;
         return result.data;
       } catch (error) {
